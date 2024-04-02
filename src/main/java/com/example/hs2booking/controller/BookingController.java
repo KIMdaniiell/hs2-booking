@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ import static com.example.hs2booking.util.ValidationMessages.*;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/bookings")
+@RequestMapping(path = "api/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -41,13 +42,23 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getRecordByPlayerId(
+            @RequestParam(value = "playerId") @Min(value = 0, message = MSG_ID_NEGATIVE) long playerId
+    ) {
+        List<BookingDTO> bookings = bookingService.getBookingsByPlayer(playerId);
+        return ResponseEntity.ok(bookings);
+    }
+
     @PostMapping(value = "/")
+    @PreAuthorize("hasAnyRole('PLAYER', 'TEAM_MANAGER')")
     public ResponseEntity<?> createBookingRecord(@Valid @RequestBody BookingDTO newRecord) {
         BookingDTO created = bookingService.create(newRecord);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @DeleteMapping(value = "/{recordId}")
+    @PreAuthorize("hasAnyRole('PLAYER', 'TEAM_MANAGER')")
     public ResponseEntity<?> deleteBookingRecord(
             @PathVariable @Min(value = 0, message = MSG_ID_NEGATIVE) long recordId
     ) {

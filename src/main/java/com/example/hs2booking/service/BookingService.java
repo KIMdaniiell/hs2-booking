@@ -34,8 +34,6 @@ public class BookingService extends GeneralService<Booking, BookingDTO> {
     private final Mapper<Booking, BookingDTO> mapper = new BookingMapper();
     private final BookingRepository bookingRepository;
 
-//    private final PlaygroundClient playgroundClient;
-//    private final ActorsClient actorsClient;
     private final PlaygroundClientWrapper playgroundClientWrapper;
     private final ActorsClientForTeamWrapper actorsClientForTeamWrapper;
     private final ActorsClientForPlayerWrapper actorsClientForPlayerWrapper;

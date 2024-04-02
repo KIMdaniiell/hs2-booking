@@ -70,11 +70,4 @@ public class RestExceptionHandler {
                 violations
         );
     }
-
-    @ExceptionHandler(ServiceUnavailableException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    protected ErrorDTO handleServiceUnavailability(ControllerException ex) {
-        return new ErrorDTO(ex.getTimestamp(), ex.getMessage(), ex.getError());
-    }
 }

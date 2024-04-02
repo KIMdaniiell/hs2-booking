@@ -1,13 +1,14 @@
+server:
+  port: 9014
+
 spring:
   application:
     name: booking-service
   profiles:
-    active: dev
+    active: LOCAL
   config:
-      import: configserver:http://localhost:8888/
-
-server:
-  port: 8083
+    import: configserver:http://configuration-server:8888/
+  #      'configuration-server' - is a container name (see more about Docker's networks DNS...)
 
 resilience4j:
   circuitbreaker:
