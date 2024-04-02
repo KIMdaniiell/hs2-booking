@@ -128,8 +128,8 @@ public class BookingService extends GeneralService<Booking, BookingDTO> {
                     if (date.isEqual(it.getDate())) {
                         LocalTime start = it.getStartTime();
                         LocalTime end = it.getEndTime();
-                        if (start.isAfter(bookStartTime) && start.isBefore(bookEndTime)
-                                || end.isBefore(bookEndTime) && end.isAfter(start)) {
+                        if ((start.isAfter(bookStartTime) || start.equals(bookStartTime)) && start.isBefore(bookEndTime)
+                                || end.isBefore(bookEndTime) && (end.isAfter(start) || end.equals(bookEndTime))) {
                             if (it.getPlayerId() != null) {
                                 curCount[0] += 1;
                             } else if (it.getTeamId() != null) {
