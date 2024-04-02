@@ -28,10 +28,24 @@ public class BookingController {
     @GetMapping(value = "/")
     public ResponseEntity<?> getAllRecords(
             @RequestParam(value = "page", defaultValue = "0") @Min(value = 0, message = MSG_PAGE_NEGATIVE) int page,
-            @RequestParam(value = "size", defaultValue = "5") @Min(value = 0, message = MSG_SIZE_NEGATIVE) @Max(value = 50, message = MSG_SIZE_TOO_BIG) int size
+            @RequestParam(value = "size", defaultValue = "5") @Min(value = 0, message = MSG_SIZE_NEGATIVE) @Max(value = 50, message = MSG_SIZE_TOO_BIG) int size,
+            @RequestParam(value = "playerId", required = false) @Min(value = 0, message = MSG_ID_NEGATIVE) Long playerId,
+            @RequestParam(value = "teamId", required = false) @Min(value = 0, message = MSG_ID_NEGATIVE) Long teamId,
+            @RequestParam(value = "playgroundId", required = false) @Min(value = 0, message = MSG_ID_NEGATIVE) Long playgroundId
     ) {
-        List<BookingDTO> records = bookingService.findAll(page, size);
-        return ResponseEntity.ok(records);
+        List<BookingDTO> bookings;
+
+        if (playerId != null) {
+            bookings = bookingService.getBookingsByPlayer(playerId);
+        } else if (teamId != null) {
+            bookings = bookingService.getBookingsByTeam(teamId);
+        } else if (playgroundId != null) {
+            bookings = bookingService.getBookingsByPlayground(playgroundId);
+        } else {
+            bookings = bookingService.findAll(page, size);
+        }
+
+        return ResponseEntity.ok(bookings);
     }
 
     @GetMapping(value = "/{bookingId}")
@@ -42,7 +56,7 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
 
-    @GetMapping
+    /*@GetMapping(value = "/")
     public ResponseEntity<?> getRecordByPlayerId(
             @RequestParam(value = "playerId") @Min(value = 0, message = MSG_ID_NEGATIVE) long playerId
     ) {
@@ -50,7 +64,7 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @GetMapping
+    @GetMapping(value = "/")
     public ResponseEntity<?> getRecordByTeamId(
             @RequestParam(value = "teamId") @Min(value = 0, message = MSG_ID_NEGATIVE) long teamId
     ) {
@@ -58,13 +72,13 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @GetMapping
+    @GetMapping(value = "/")
     public ResponseEntity<?> getRecordByPlaygroundId(
             @RequestParam(value = "playgroundId") @Min(value = 0, message = MSG_ID_NEGATIVE) long playgroundId
     ) {
         List<BookingDTO> bookings = bookingService.getBookingsByPlayground(playgroundId);
         return ResponseEntity.ok(bookings);
-    }
+    }*/
 
     @PostMapping(value = "/")
     @PreAuthorize("hasAnyRole('PLAYER', 'TEAM_MANAGER')")
